@@ -1,1 +1,116 @@
-/* Application styles will be added in the interface implementation step. */
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+  color-scheme: dark;
+  font-family: 'Manrope', sans-serif;
+  color: #f2f4ef;
+  background: #101820;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --surface: #18232c;
+  --surface-raised: #202e38;
+  --muted: #96a4a8;
+  --accent: #bbf36b;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(ellipse at 12% 12%, rgb(66 105 79 / 17%), transparent 34rem),
+    radial-gradient(ellipse at 92% 72%, rgb(49 75 91 / 18%), transparent 38rem),
+    #101820;
+}
+
+button { font: inherit; }
+
+.site-header {
+  width: min(1120px, calc(100% - 48px));
+  min-height: 88px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgb(222 238 225 / 9%);
+}
+
+.brand {
+  color: var(--accent);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: .22em;
+  text-decoration: none;
+}
+
+.header-actions { display: flex; gap: 10px; }
+
+.button {
+  min-height: 42px;
+  padding: 0 17px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+  transition: transform .18s ease, background .18s ease, border-color .18s ease;
+}
+
+.button:hover { transform: translateY(-2px); }
+.button:focus-visible, .memory-card:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+.button--quiet { color: #dce3de; background: #1b2831; border-color: #34434b; }
+.button--quiet:hover { background: #263640; }
+.button--primary { color: #142018; background: var(--accent); }
+.button--primary:hover { background: #cdfb8b; }
+
+.main-content { width: min(760px, calc(100% - 40px)); margin: 0 auto; padding: 48px 0 58px; }
+.intro { margin: 0 0 28px; text-align: center; }
+.eyebrow { margin: 0 0 9px; color: var(--accent); font: 500 10px 'DM Mono', monospace; letter-spacing: .24em; }
+.page-title { margin: 0; font-size: clamp(32px, 6vw, 52px); line-height: 1.1; letter-spacing: -.055em; }
+.intro__description { max-width: 430px; margin: 13px auto 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
+
+.stats { display: flex; justify-content: center; gap: 12px; margin: 0 0 22px; }
+.stat-card { min-width: 140px; padding: 12px 18px; display: flex; align-items: center; justify-content: space-between; gap: 18px; border: 1px solid #2c3b44; border-radius: 14px; background: rgb(24 35 44 / 82%); }
+.stat-label { color: var(--muted); font-size: 11px; }
+.stat-value { color: #f4f7f0; font: 500 18px 'DM Mono', monospace; }
+.stat-total { color: #849398; font-size: 13px; }
+
+.game-board { width: min(100%, 520px); margin: 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.game-board__cell { min-width: 0; aspect-ratio: 1; }
+.memory-card { width: 100%; height: 100%; padding: 0; border: 0; border-radius: 15px; background: transparent; cursor: pointer; perspective: 800px; }
+.memory-card__inner { position: relative; display: block; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .4s cubic-bezier(.2,.7,.2,1); }
+.memory-card:hover .memory-card__inner { transform: translateY(-3px); }
+.memory-card__face { position: absolute; inset: 0; display: grid; place-items: center; overflow: hidden; border: 1px solid #35464f; border-radius: 15px; backface-visibility: hidden; }
+.memory-card__back { color: #96a7a0; background: linear-gradient(145deg, #263740, #1b2932); font: 500 24px 'DM Mono', monospace; }
+.memory-card__back::before { position: absolute; inset: 7px; border: 1px solid rgb(187 243 107 / 12%); border-radius: 10px; content: ''; }
+.memory-card__front { transform: rotateY(180deg); color: #101820; background: var(--accent); font-size: clamp(28px, 6vw, 48px); }
+
+.site-footer { padding: 0 20px 28px; color: #78888c; font: 11px 'DM Mono', monospace; text-align: center; letter-spacing: .04em; }
+
+.modal-overlay { position: fixed; z-index: 5; inset: 0; display: grid; place-items: center; padding: 20px; background: rgb(4 10 14 / 76%); backdrop-filter: blur(7px); }
+.modal-overlay[hidden] { display: none; }
+.modal { width: min(100%, 440px); padding: 28px; border: 1px solid #3a4b52; border-radius: 22px; background: #18232c; box-shadow: 0 24px 90px rgb(0 0 0 / 42%); }
+.modal__title { margin: 0 0 16px; font-size: 24px; }
+.modal__content { color: #b7c2bd; }
+.modal__actions { display: flex; gap: 10px; margin: 22px 0 10px; }
+
+@media (max-width: 540px) {
+  .site-header { width: calc(100% - 32px); min-height: 74px; }
+  .header-actions { gap: 7px; }
+  .button { min-height: 40px; padding: 0 11px; font-size: 11px; }
+  .main-content { width: calc(100% - 32px); padding-top: 38px; }
+  .intro { margin-bottom: 22px; }
+  .intro__description { max-width: 330px; font-size: 12px; }
+  .stats { gap: 8px; margin-bottom: 16px; }
+  .stat-card { min-width: 0; flex: 1; padding: 10px 12px; gap: 8px; }
+  .stat-label { font-size: 10px; }
+  .stat-value { font-size: 16px; }
+  .game-board { gap: 8px; }
+  .memory-card, .memory-card__face { border-radius: 11px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
