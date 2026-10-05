@@ -26,6 +26,7 @@ body {
 }
 
 button { font: inherit; }
+body.modal-open { overflow: hidden; }
 
 .site-header {
   width: min(1120px, calc(100% - 48px));
@@ -100,6 +101,9 @@ button { font: inherit; }
 .modal__title { margin: 0 0 16px; font-size: 24px; }
 .modal__content { color: #b7c2bd; }
 .modal__actions { display: flex; gap: 10px; margin: 22px 0 10px; }
+.modal__actions:empty { display: none; }
+.modal__actions .button { flex: 1; }
+.victory-message { margin: 0; color: #dce6de; font-size: 15px; line-height: 1.7; }
 
 @media (max-width: 540px) {
   .site-header { width: calc(100% - 32px); min-height: 74px; }

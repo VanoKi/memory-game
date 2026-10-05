@@ -100,7 +100,7 @@ const createModal = () => {
 
   dialog.append(title, content, actions, closeButton);
   overlay.append(dialog);
-  return overlay;
+  return { overlay, dialog, title, content, actions, closeButton };
 };
 
 const { header: appHeader, leadersButton, restartButton } = createHeader();
@@ -116,9 +116,9 @@ intro.append(
 
 main.append(intro, createStats(), createBoard());
 const footer = createElement('footer', 'site-footer', 'Memory Game · RS School');
-const modal = createModal();
+const modalElements = createModal();
 
-document.body.append(appHeader, main, footer, modal);
+document.body.append(appHeader, main, footer, modalElements.overlay);
 
 const cardFaces = Array.from(document.querySelectorAll('.memory-card__front'));
 const cards = Array.from(document.querySelectorAll('.memory-card'));
@@ -151,6 +151,8 @@ let lockBoard = false;
 let closeMismatchTimer = null;
 let moves = 0;
 let matchedPairs = 0;
+let gameFinished = false;
+let lastFocusedElement = null;
 
 const updateStats = () => {
   movesDisplay.textContent = String(moves);
@@ -175,9 +177,36 @@ const clearSelection = () => {
   lockBoard = false;
 };
 
+const closeModal = () => {
+  if (modalElements.overlay.hidden) return;
+  modalElements.overlay.hidden = true;
+  modalElements.overlay.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
+  if (lastFocusedElement instanceof HTMLElement) lastFocusedElement.focus();
+};
+
+const openModal = ({ title, content, actions = [] }) => {
+  lastFocusedElement = document.activeElement;
+  modalElements.title.textContent = title;
+  modalElements.content.replaceChildren(content);
+  modalElements.actions.replaceChildren(...actions);
+  modalElements.overlay.hidden = false;
+  modalElements.overlay.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+  const firstAction = actions[0] ?? modalElements.closeButton;
+  firstAction.focus();
+};
+
+const showVictoryModal = () => {
+  const message = createElement('p', 'victory-message', `Вы нашли все пары за ${moves} ходов!`);
+  const newGameButton = createButton('Новая игра', 'button button--primary');
+  newGameButton.addEventListener('click', startNewGame);
+  openModal({ title: 'Победа!', content: message, actions: [newGameButton] });
+};
+
 const handleCardClick = (event) => {
   const card = event.currentTarget;
-  if (lockBoard || card === firstCard || card.classList.contains('is-matched')) return;
+  if (gameFinished || lockBoard || card === firstCard || card.classList.contains('is-matched')) return;
 
   revealCard(card);
 
@@ -201,6 +230,10 @@ const handleCardClick = (event) => {
     matchedPairs += 1;
     updateStats();
     clearSelection();
+    if (matchedPairs === cardTypes.length) {
+      gameFinished = true;
+      showVictoryModal();
+    }
     return;
   }
 
@@ -213,6 +246,7 @@ const handleCardClick = (event) => {
 };
 
 const startNewGame = () => {
+  closeModal();
   if (closeMismatchTimer !== null) {
     window.clearTimeout(closeMismatchTimer);
     closeMismatchTimer = null;
@@ -220,6 +254,7 @@ const startNewGame = () => {
   clearSelection();
   moves = 0;
   matchedPairs = 0;
+  gameFinished = false;
 
   const deck = shuffle([...cardTypes, ...cardTypes]);
   deck.forEach((type, index) => {
@@ -234,6 +269,30 @@ const startNewGame = () => {
   updateStats();
 };
 
+modalElements.closeButton.addEventListener('click', closeModal);
+modalElements.overlay.addEventListener('click', (event) => {
+  if (event.target === modalElements.overlay) closeModal();
+});
+document.addEventListener('keydown', (event) => {
+  if (modalElements.overlay.hidden) return;
+  if (event.key === 'Escape') {
+    closeModal();
+    return;
+  }
+  if (event.key === 'Tab') {
+    const focusable = Array.from(modalElements.dialog.querySelectorAll('button:not([disabled])'));
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+});
 cards.forEach((card) => card.addEventListener('click', handleCardClick));
 restartButton.addEventListener('click', startNewGame);
 startNewGame();
