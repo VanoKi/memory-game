@@ -33,13 +33,18 @@ const createStats = () => {
 
   const moves = createElement('div', 'stat-card');
   const movesLabel = createElement('span', 'stat-label', 'Ходы');
-  const movesValue = createElement('strong', 'stat-value', '0');
+  const movesValue = createElement('strong', 'stat-value');
+  const movesNumber = createElement('span', '', '0');
+  movesNumber.id = 'moves-count';
+  movesValue.append(movesNumber);
   moves.append(movesLabel, movesValue);
 
   const pairs = createElement('div', 'stat-card');
   const pairsLabel = createElement('span', 'stat-label', 'Найдено пар');
-  const pairsValue = createElement('strong', 'stat-value', '0');
-  pairsValue.append(' ', createElement('span', 'stat-total', '/ 8'));
+  const pairsValue = createElement('strong', 'stat-value');
+  const pairsNumber = createElement('span', '', '0');
+  pairsNumber.id = 'pairs-count';
+  pairsValue.append(pairsNumber, ' ', createElement('span', 'stat-total', '/ 8'));
   pairs.append(pairsLabel, pairsValue);
 
   stats.append(moves, pairs);
@@ -55,6 +60,7 @@ const createCard = (index) => {
   const back = createElement('span', 'memory-card__face memory-card__back', '?');
   back.setAttribute('aria-hidden', 'true');
   const front = createElement('span', 'memory-card__face memory-card__front');
+  front.dataset.role = 'face';
   front.setAttribute('aria-hidden', 'true');
   inner.append(back, front);
   card.append(inner);
@@ -114,6 +120,42 @@ const modal = createModal();
 
 document.body.append(appHeader, main, footer, modal);
 
-// Buttons are wired to game actions in the next implementation steps.
+const cardFaces = Array.from(document.querySelectorAll('.memory-card__front'));
+const cards = Array.from(document.querySelectorAll('.memory-card'));
+const movesDisplay = document.querySelector('#moves-count');
+const pairsDisplay = document.querySelector('#pairs-count');
+
+const cardTypes = [
+  { name: 'Солнце', symbol: '☀' },
+  { name: 'Луна', symbol: '☾' },
+  { name: 'Молния', symbol: 'ϟ' },
+  { name: 'Звезда', symbol: '✦' },
+  { name: 'Цветок', symbol: '✿' },
+  { name: 'Лист', symbol: '❧' },
+  { name: 'Кристалл', symbol: '◇' },
+  { name: 'Пламя', symbol: '♨' },
+];
+
+const shuffle = (items) => {
+  const shuffled = [...items];
+  for (let index = shuffled.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [shuffled[index], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[index]];
+  }
+  return shuffled;
+};
+
+const startNewGame = () => {
+  const deck = shuffle([...cardTypes, ...cardTypes]);
+  deck.forEach((type, index) => {
+    cards[index].dataset.pair = type.name;
+    cardFaces[index].textContent = type.symbol;
+    cards[index].setAttribute('aria-label', `Карточка ${index + 1}, закрыта`);
+  });
+  movesDisplay.textContent = '0';
+  pairsDisplay.textContent = '0';
+};
+
+startNewGame();
 void leadersButton;
 void restartButton;

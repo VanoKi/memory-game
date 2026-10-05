@@ -86,6 +86,11 @@ button { font: inherit; }
 .memory-card__back { color: #96a7a0; background: linear-gradient(145deg, #263740, #1b2932); font: 500 24px 'DM Mono', monospace; }
 .memory-card__back::before { position: absolute; inset: 7px; border: 1px solid rgb(187 243 107 / 12%); border-radius: 10px; content: ''; }
 .memory-card__front { transform: rotateY(180deg); color: #101820; background: var(--accent); font-size: clamp(28px, 6vw, 48px); }
+.memory-card.is-open .memory-card__inner,
+.memory-card.is-matched .memory-card__inner { transform: rotateY(180deg); }
+.memory-card.is-matched .memory-card__front { color: #eef8e5; background: #426b51; border-color: #80ae73; }
+.memory-card.is-matched { cursor: default; }
+.memory-card.is-matched:hover .memory-card__inner { transform: rotateY(180deg); }
 
 .site-footer { padding: 0 20px 28px; color: #78888c; font: 11px 'DM Mono', monospace; text-align: center; letter-spacing: .04em; }
 
