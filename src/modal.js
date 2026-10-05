@@ -23,21 +23,21 @@ export const createModalController = (modal) => {
   };
 
   const showVictory = (moves, onNewGame) => {
-    const message = createElement('p', 'victory-message', `Вы нашли все пары за ${moves} ходов!`);
-    const newGameButton = createButton('Новая игра', 'button button--primary');
+    const message = createElement('p', 'victory-message', `You found every pair in ${moves} moves!`);
+    const newGameButton = createButton('New Game', 'button button--primary');
     newGameButton.addEventListener('click', onNewGame);
-    open({ title: 'Победа!', content: message, actions: [newGameButton] });
+    open({ title: 'You Win!', content: message, actions: [newGameButton] });
   };
 
   const showLeaderboard = (results, formatDate) => {
     let content;
     if (results.length === 0) {
-      content = createElement('p', 'leaderboard-empty', 'Пока нет результатов. Найдите все пары, чтобы попасть в таблицу!');
+      content = createElement('p', 'leaderboard-empty', 'No results yet. Find every pair to make the leaderboard!');
     } else {
       content = createElement('table', 'leaderboard-table');
       const head = createElement('thead');
       const headerRow = createElement('tr');
-      ['Место', 'Ходы', 'Дата'].forEach((label) => {
+      ['Rank', 'Moves', 'Date'].forEach((label) => {
         const cell = createElement('th', '', label);
         cell.scope = 'col';
         headerRow.append(cell);
@@ -53,7 +53,7 @@ export const createModalController = (modal) => {
       });
       content.append(head, body);
     }
-    open({ title: 'Таблица лидеров', content });
+    open({ title: 'Leaderboard', content });
   };
 
   modal.closeButton.addEventListener('click', close);

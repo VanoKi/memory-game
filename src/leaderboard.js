@@ -32,8 +32,9 @@ export const saveResult = (moves) => {
   return topResults;
 };
 
-export const formatResultDate = (timestamp) => new Intl.DateTimeFormat('ru-RU', {
-  day: '2-digit',
-  month: '2-digit',
-  year: 'numeric',
-}).format(new Date(timestamp));
+export const formatResultDate = (timestamp) => {
+  const date = new Date(timestamp);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  return `${day}.${month}.${date.getFullYear()}`;
+};

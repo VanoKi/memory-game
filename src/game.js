@@ -30,7 +30,7 @@ export const createGame = ({ cards, faces, movesDisplay, pairsDisplay, onVictory
     card.classList.remove('is-open', 'is-matched');
     card.disabled = false;
     card.setAttribute('aria-pressed', 'false');
-    card.setAttribute('aria-label', `Карточка ${index + 1}, закрыта`);
+    card.setAttribute('aria-label', `Card ${index + 1}, face down`);
   };
 
   const startNewGame = () => {
@@ -50,13 +50,13 @@ export const createGame = ({ cards, faces, movesDisplay, pairsDisplay, onVictory
   const reveal = (card) => {
     card.classList.add('is-open');
     card.setAttribute('aria-pressed', 'true');
-    card.setAttribute('aria-label', `Карточка ${Number(card.dataset.index) + 1}, ${card.dataset.pair}`);
+    card.setAttribute('aria-label', `Card ${Number(card.dataset.index) + 1}, ${card.dataset.pair}`);
   };
 
   const hide = (card) => {
     card.classList.remove('is-open');
     card.setAttribute('aria-pressed', 'false');
-    card.setAttribute('aria-label', `Карточка ${Number(card.dataset.index) + 1}, закрыта`);
+    card.setAttribute('aria-label', `Card ${Number(card.dataset.index) + 1}, face down`);
   };
 
   const handleCardClick = (event) => {
@@ -76,7 +76,7 @@ export const createGame = ({ cards, faces, movesDisplay, pairsDisplay, onVictory
       [firstCard, secondCard].forEach((matchedCard) => {
         matchedCard.classList.add('is-matched');
         matchedCard.disabled = true;
-        matchedCard.setAttribute('aria-label', `Карточка ${Number(matchedCard.dataset.index) + 1}, пара ${matchedCard.dataset.pair} найдена`);
+        matchedCard.setAttribute('aria-label', `Card ${Number(matchedCard.dataset.index) + 1}, ${matchedCard.dataset.pair} pair found`);
       });
       matchedPairs += 1;
       updateStats();

@@ -4,11 +4,11 @@ const createHeader = () => {
   const header = createElement('header', 'site-header');
   const brand = createElement('a', 'brand', 'MEMORY');
   brand.href = '#main';
-  brand.setAttribute('aria-label', 'Memory Game — на главную');
+  brand.setAttribute('aria-label', 'Memory Game — home');
 
   const actions = createElement('div', 'header-actions');
-  const leadersButton = createButton('Таблица лидеров', 'button button--quiet');
-  const restartButton = createButton('Новая игра', 'button button--primary');
+  const leadersButton = createButton('Leaderboard', 'button button--quiet');
+  const restartButton = createButton('New Game', 'button button--primary');
   actions.append(leadersButton, restartButton);
   header.append(brand, actions);
   return { header, leadersButton, restartButton };
@@ -16,11 +16,11 @@ const createHeader = () => {
 
 const createStats = () => {
   const stats = createElement('section', 'stats');
-  stats.setAttribute('aria-label', 'Статистика игры');
+  stats.setAttribute('aria-label', 'Game statistics');
   const moves = createElement('div', 'stat-card');
   const movesNumber = createElement('span', '', '0');
   movesNumber.id = 'moves-count';
-  moves.append(createElement('span', 'stat-label', 'Ходы'), createElement('strong', 'stat-value'));
+  moves.append(createElement('span', 'stat-label', 'Moves'), createElement('strong', 'stat-value'));
   moves.lastElementChild.append(movesNumber);
 
   const pairs = createElement('div', 'stat-card');
@@ -28,13 +28,13 @@ const createStats = () => {
   pairsNumber.id = 'pairs-count';
   const pairsValue = createElement('strong', 'stat-value');
   pairsValue.append(pairsNumber, ' ', createElement('span', 'stat-total', '/ 8'));
-  pairs.append(createElement('span', 'stat-label', 'Найдено пар'), pairsValue);
+  pairs.append(createElement('span', 'stat-label', 'Pairs found'), pairsValue);
   stats.append(moves, pairs);
   return stats;
 };
 
 const createCard = (index) => {
-  const card = createButton('', 'memory-card', `Карточка ${index + 1}, закрыта`);
+  const card = createButton('', 'memory-card', `Card ${index + 1}, face down`);
   card.dataset.index = String(index);
   card.setAttribute('aria-pressed', 'false');
   const inner = createElement('span', 'memory-card__inner');
@@ -55,7 +55,7 @@ const createCard = (index) => {
 const createBoard = () => {
   const board = createElement('section', 'game-board');
   board.id = 'game-board';
-  board.setAttribute('aria-label', 'Игровое поле, 16 карточек');
+  board.setAttribute('aria-label', 'Game board, 16 cards');
   board.setAttribute('role', 'grid');
   const cards = [];
   const faces = [];
@@ -84,7 +84,7 @@ const createModalShell = () => {
   title.id = 'modal-title';
   const content = createElement('div', 'modal__content');
   const actions = createElement('div', 'modal__actions');
-  const closeButton = createButton('Закрыть', 'button button--quiet');
+  const closeButton = createButton('Close', 'button button--quiet');
   dialog.append(title, content, actions, closeButton);
   overlay.append(dialog);
   return { overlay, dialog, title, content, actions, closeButton };
@@ -96,9 +96,9 @@ export const createApp = () => {
   main.id = 'main';
   const intro = createElement('section', 'intro');
   intro.append(
-    createElement('p', 'eyebrow', 'ТРЕНИРУЙ ПАМЯТЬ'),
-    createElement('h1', 'page-title', 'Найди все пары.'),
-    createElement('p', 'intro__description', 'Открывай карточки, запоминай изображения и собери все совпадения.'),
+    createElement('p', 'eyebrow', 'TRAIN YOUR MEMORY'),
+    createElement('h1', 'page-title', 'Find every pair.'),
+    createElement('p', 'intro__description', 'Flip the cards, remember each logo, and find all the matching pairs.'),
   );
   const { board, cards, faces } = createBoard();
   main.append(intro, createStats(), board);

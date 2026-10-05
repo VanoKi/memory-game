@@ -1,24 +1,24 @@
 # Memory Game
 
-Учебный проект RS School: игра на поиск пар карточек.
+A memory matching game built for the RS School assignment.
 
-## Демо
+## Demo
 
-После настройки GitHub Pages игра будет доступна по адресу: <https://vanoki.github.io/memory-game/>.
+Play the game at <https://vanoki.github.io/memory-game/>.
 
-## Локальный запуск
+## Run locally
 
-Запустите статический сервер из корня проекта:
+Start a static server from the project root:
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Затем откройте <http://localhost:8000>.
+Then open <http://localhost:8000>.
 
-## Структура
+## Project structure
 
-- `index.html` — точка входа с пустым контейнером `body` и подключённым скриптом.
-- `styles.css` — стили приложения.
-- `src/main.js` — JavaScript-точка входа.
-- `.github/workflows/deploy.yml` — автоматическая публикация ветки `memory-game` в GitHub Pages.
+- `index.html` — entry point with an otherwise empty `body`.
+- `styles.css` — application styles.
+- `src/main.js` — JavaScript entry point.
+- `.github/workflows/deploy.yml` — deploys the `memory-game` branch to GitHub Pages.
