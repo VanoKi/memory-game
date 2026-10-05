@@ -126,14 +126,14 @@ const movesDisplay = document.querySelector('#moves-count');
 const pairsDisplay = document.querySelector('#pairs-count');
 
 const cardTypes = [
-  { name: 'Солнце', symbol: '☀' },
-  { name: 'Луна', symbol: '☾' },
-  { name: 'Молния', symbol: 'ϟ' },
-  { name: 'Звезда', symbol: '✦' },
-  { name: 'Цветок', symbol: '✿' },
-  { name: 'Лист', symbol: '❧' },
-  { name: 'Кристалл', symbol: '◇' },
-  { name: 'Пламя', symbol: '♨' },
+  { name: 'Солнце', symbol: '☀', color: '#f4c95d' },
+  { name: 'Луна', symbol: '☾', color: '#b7a6f6' },
+  { name: 'Молния', symbol: 'ϟ', color: '#8bd8e8' },
+  { name: 'Звезда', symbol: '✦', color: '#f49ab7' },
+  { name: 'Цветок', symbol: '✿', color: '#f4a270' },
+  { name: 'Лист', symbol: '❧', color: '#a7df83' },
+  { name: 'Кристалл', symbol: '◇', color: '#89b8f4' },
+  { name: 'Пламя', symbol: '♨', color: '#f17e6c' },
 ];
 
 const shuffle = (items) => {
@@ -145,17 +145,96 @@ const shuffle = (items) => {
   return shuffled;
 };
 
+let firstCard = null;
+let secondCard = null;
+let lockBoard = false;
+let closeMismatchTimer = null;
+let moves = 0;
+let matchedPairs = 0;
+
+const updateStats = () => {
+  movesDisplay.textContent = String(moves);
+  pairsDisplay.textContent = String(matchedPairs);
+};
+
+const revealCard = (card) => {
+  card.classList.add('is-open');
+  card.setAttribute('aria-pressed', 'true');
+  card.setAttribute('aria-label', `Карточка ${Number(card.dataset.index) + 1}, ${card.dataset.pair}`);
+};
+
+const hideCard = (card) => {
+  card.classList.remove('is-open');
+  card.setAttribute('aria-pressed', 'false');
+  card.setAttribute('aria-label', `Карточка ${Number(card.dataset.index) + 1}, закрыта`);
+};
+
+const clearSelection = () => {
+  firstCard = null;
+  secondCard = null;
+  lockBoard = false;
+};
+
+const handleCardClick = (event) => {
+  const card = event.currentTarget;
+  if (lockBoard || card === firstCard || card.classList.contains('is-matched')) return;
+
+  revealCard(card);
+
+  if (!firstCard) {
+    firstCard = card;
+    return;
+  }
+
+  secondCard = card;
+  lockBoard = true;
+  moves += 1;
+  updateStats();
+
+  if (firstCard.dataset.pair === secondCard.dataset.pair) {
+    firstCard.classList.add('is-matched');
+    secondCard.classList.add('is-matched');
+    firstCard.setAttribute('aria-label', `Карточка ${Number(firstCard.dataset.index) + 1}, пара ${firstCard.dataset.pair} найдена`);
+    secondCard.setAttribute('aria-label', `Карточка ${Number(secondCard.dataset.index) + 1}, пара ${secondCard.dataset.pair} найдена`);
+    firstCard.disabled = true;
+    secondCard.disabled = true;
+    matchedPairs += 1;
+    updateStats();
+    clearSelection();
+    return;
+  }
+
+  closeMismatchTimer = window.setTimeout(() => {
+    hideCard(firstCard);
+    hideCard(secondCard);
+    closeMismatchTimer = null;
+    clearSelection();
+  }, 1000);
+};
+
 const startNewGame = () => {
+  if (closeMismatchTimer !== null) {
+    window.clearTimeout(closeMismatchTimer);
+    closeMismatchTimer = null;
+  }
+  clearSelection();
+  moves = 0;
+  matchedPairs = 0;
+
   const deck = shuffle([...cardTypes, ...cardTypes]);
   deck.forEach((type, index) => {
     cards[index].dataset.pair = type.name;
     cardFaces[index].textContent = type.symbol;
+    cardFaces[index].style.setProperty('--card-color', type.color);
+    cards[index].classList.remove('is-open', 'is-matched');
+    cards[index].disabled = false;
+    cards[index].setAttribute('aria-pressed', 'false');
     cards[index].setAttribute('aria-label', `Карточка ${index + 1}, закрыта`);
   });
-  movesDisplay.textContent = '0';
-  pairsDisplay.textContent = '0';
+  updateStats();
 };
 
+cards.forEach((card) => card.addEventListener('click', handleCardClick));
+restartButton.addEventListener('click', startNewGame);
 startNewGame();
 void leadersButton;
-void restartButton;
