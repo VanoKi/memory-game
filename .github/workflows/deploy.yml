@@ -1,0 +1,55 @@
+name: Deploy Memory Game to GitHub Pages
+
+on:
+  push:
+    branches:
+      - memory-game
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Version static assets
+        run: |
+          python3 - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          version = os.environ["GITHUB_SHA"]
+          index = Path("index.html")
+          html = index.read_text()
+          html = html.replace('href="styles.css"', f'href="styles.css?v={version}"')
+          html = html.replace('src="src/main.js"', f'src="src/main.js?v={version}"')
+          index.write_text(html)
+
+          for module in Path("src").glob("*.js"):
+              source = module.read_text()
+              source = re.sub(r"(from\s+['\"]\./[^'\"]+\.js)(['\"])", rf"\1?v={version}\2", source)
+              source = re.sub(r"(['\"]\./assets/logos/[^'\"]+\.svg)(['\"])", rf"\1?v={version}\2", source)
+              module.write_text(source)
+          PY
+      - name: Upload site files
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: .
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
