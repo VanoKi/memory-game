@@ -29,6 +29,33 @@ export const createModalController = (modal) => {
     open({ title: 'Победа!', content: message, actions: [newGameButton] });
   };
 
+  const showLeaderboard = (results, formatDate) => {
+    let content;
+    if (results.length === 0) {
+      content = createElement('p', 'leaderboard-empty', 'Пока нет результатов. Найдите все пары, чтобы попасть в таблицу!');
+    } else {
+      content = createElement('table', 'leaderboard-table');
+      const head = createElement('thead');
+      const headerRow = createElement('tr');
+      ['Место', 'Ходы', 'Дата'].forEach((label) => {
+        const cell = createElement('th', '', label);
+        cell.scope = 'col';
+        headerRow.append(cell);
+      });
+      head.append(headerRow);
+      const body = createElement('tbody');
+      results.forEach((result, index) => {
+        const row = createElement('tr');
+        [String(index + 1), String(result.moves), formatDate(result.completedAt)].forEach((value) => {
+          row.append(createElement('td', '', value));
+        });
+        body.append(row);
+      });
+      content.append(head, body);
+    }
+    open({ title: 'Таблица лидеров', content });
+  };
+
   modal.closeButton.addEventListener('click', close);
   modal.overlay.addEventListener('click', (event) => {
     if (event.target === modal.overlay) close();
@@ -53,5 +80,5 @@ export const createModalController = (modal) => {
     }
   });
 
-  return { open, close, showVictory };
+  return { open, close, showVictory, showLeaderboard };
 };
