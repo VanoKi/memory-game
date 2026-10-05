@@ -42,6 +42,11 @@ const createCard = (index) => {
   back.setAttribute('aria-hidden', 'true');
   const front = createElement('span', 'memory-card__face memory-card__front');
   front.setAttribute('aria-hidden', 'true');
+  const logo = createElement('img', 'framework-logo');
+  logo.alt = '';
+  logo.draggable = false;
+  const name = createElement('span', 'framework-name');
+  front.append(logo, name);
   inner.append(back, front);
   card.append(inner);
   return { card, face: front };

@@ -22,7 +22,10 @@ export const createGame = ({ cards, faces, movesDisplay, pairsDisplay, onVictory
 
   const setCardFace = (card, face, type, index) => {
     card.dataset.pair = type.name;
-    face.textContent = type.symbol;
+    const logo = face.querySelector('.framework-logo');
+    logo.src = type.logo;
+    logo.alt = '';
+    face.querySelector('.framework-name').textContent = type.name;
     face.style.setProperty('--card-color', type.color);
     card.classList.remove('is-open', 'is-matched');
     card.disabled = false;
